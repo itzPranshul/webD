@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic Tac Toe</title>
+  <style>
+    *{
+      background-color: aqua;
+    }
+    p{
+      font-size: 5pc;
+      background-color: blue;
+      border-radius: 5px;
+      height: 5cm;
+      margin-top: 0%;
+      border: #000;
+      padding-top: 5pc;
+      padding-left: 25pc;
+      margin: 0px;
+    }
+    .board {
+      display: flex;
+      flex-wrap :nowrap;
+      width :300px;
+      justify-content: center;
+      align-items: center;
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      margin: auto;
+    
+    }
+    .board :hover{
+      background-color: aliceblue;
+      transition: 1s;
+    }
+    hr{
+      border-color: black;
+    }
+
+
+    
+    .cell {
+      border: 1px solid #000;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 120px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: width 5s,height 5s, border-radius 2.5s;
+    }
+
+  </style>
+</head>
+<body>
+
+  <p>TIC TAC TOE</p>
+  <br>
+  <br>
+  <br>
+  <br>
+  <div class="board"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const board = document.querySelector('.board');
+      const cells = [];
+      let currentPlayer = 'X';
+      let gameOver = false;
+
+      // Create cells
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cells.push(cell);
+        board.appendChild(cell);
+      }
+
+      // Handle cell click
+      cells.forEach((cell, index) => {
+        cell.addEventListener('click', () => {
+          if (cell.textContent === '' && !gameOver) {
+            cell.textContent = currentPlayer;
+            checkWin();
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+          }
+        });
+      });
+
+      // Check for a win
+      function checkWin() {
+        const winningCombinations = [
+          [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+          [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+          [0, 4, 8], [2, 4, 6] // Diagonals
+        ];
+
+        for (let combination of winningCombinations) {
+          const [a, b, c] = combination;
+          if (cells[a].textContent === currentPlayer && cells[b].textContent === currentPlayer && cells[c].textContent === currentPlayer) {
+            gameOver = true;
+            highlightWinningCells(combination);
+            setTimeout(() => {
+              alert(`Player ${currentPlayer} wins!`);
+              resetGame();
+            }, 100);
+            return;
+          }
+        }
+
+        if (!cells.some(cell => cell.textContent === '')) {
+          gameOver = true;
+          setTimeout(() => {
+            alert('It\'s a tie!');
+            resetGame();
+          }, 100);
+        }
+      }
+
+      // Highlight winning cells
+      function highlightWinningCells(combination) {
+        for (let index of combination) {
+          cells[index].style.backgroundColor = '#f484';
+        }
+      }
+
+      // Reset the game
+      function resetGame() {
+        cells.forEach(cell => {
+          cell.textContent = '';
+          cell.style.backgroundColor = '';
+        });
+        currentPlayer = 'X';
+        gameOver = false;
+      }
+    });
+  </script>
+</body>
+</html>
